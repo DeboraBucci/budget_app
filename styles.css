@@ -1,0 +1,230 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%; /* 10px */
+}
+
+body {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  color: #2c2c2c;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 5rem;
+  font-weight: 100;
+  margin: 0 auto;
+  width: 70%;
+}
+
+h2 {
+  font-size: 3rem;
+  font-weight: 100;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid;
+  padding: 0.5rem 1rem;
+}
+
+input {
+  width: 100%;
+  height: 3rem;
+  border: 1px solid #d1d1d1;
+}
+
+li {
+  list-style: none;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  gap: 2rem;
+}
+
+/* INFO */
+.info {
+  display: flex;
+  gap: 10rem;
+  margin: 2rem auto;
+}
+
+.box {
+  text-align: center;
+}
+
+.box i {
+  font-size: 5rem;
+  opacity: 0.7;
+}
+
+.box p {
+  font-size: 3rem;
+}
+
+.box--1 i {
+  color: green;
+}
+
+.box--2 i {
+  color: midnightblue;
+}
+
+.box--3 i {
+  color: goldenrod;
+}
+
+/* EXPENSES */
+.expenses {
+  width: 50%;
+  border: 1px solid #e6e6e6;
+  font-size: 1.6rem;
+}
+
+.expenses li {
+  width: 100%;
+  padding: 1rem;
+  background-color: #e6e6e6;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.expenses li div {
+  display: flex;
+  gap: 2rem;
+}
+
+.expenses li:nth-child(even) {
+  background-color: transparent;
+}
+
+.expense span {
+  color: rgb(194, 66, 91);
+}
+
+.loan span {
+  color: rgb(54, 124, 54);
+}
+
+.expense-value {
+  width: 30%;
+  justify-content: space-between;
+}
+
+/* FORMS */
+.forms {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 40%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 4rem;
+  font-size: 2.5rem;
+}
+
+.form--1 {
+  border: 1px solid crimson;
+}
+
+.form--1 button {
+  border-color: crimson;
+  color: crimson;
+}
+
+.form--2 {
+  border: 1px solid green;
+}
+
+.form--2 button {
+  border-color: green;
+  color: green;
+}
+
+.form--3 {
+  border: 1px solid purple;
+}
+
+.form--3 button {
+  border-color: purple;
+  color: purple;
+}
+
+@media (max-width: 1400px) {
+  .main,
+  h1 {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .expenses {
+    width: 100%;
+  }
+
+  .forms {
+    width: 100%;
+  }
+
+  .form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .info {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 2rem auto;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 100;
+  }
+
+  .box i {
+    font-size: 3rem;
+  }
+
+  .box p {
+    font-size: 2rem;
+  }
+
+  .form {
+    padding: 2rem;
+    font-size: 2rem;
+  }
+}
