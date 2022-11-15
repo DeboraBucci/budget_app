@@ -22,8 +22,6 @@ body {
 h1 {
   font-size: 5rem;
   font-weight: 100;
-  margin: 0 auto;
-  width: 70%;
 }
 
 h2 {
@@ -46,6 +44,14 @@ input {
 
 li {
   list-style: none;
+}
+
+.heading {
+  margin: 0 auto;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .main {
@@ -92,14 +98,14 @@ li {
   color: goldenrod;
 }
 
-/* EXPENSES */
-.expenses {
+/* EXPENSES and LOANS */
+.expensesAndLoans {
   width: 50%;
   border: 1px solid #e6e6e6;
   font-size: 1.6rem;
 }
 
-.expenses li {
+.expensesAndLoans li {
   width: 100%;
   padding: 1rem;
   background-color: #e6e6e6;
@@ -108,12 +114,12 @@ li {
   gap: 2rem;
 }
 
-.expenses li div {
+.expensesAndLoans li div {
   display: flex;
   gap: 2rem;
 }
 
-.expenses li:nth-child(even) {
+.expensesAndLoans li:nth-child(even) {
   background-color: transparent;
 }
 
@@ -183,6 +189,10 @@ li {
 }
 
 @media (max-width: 900px) {
+  .heading {
+    flex-direction: column;
+  }
+
   .content {
     flex-direction: column-reverse;
     align-items: center;

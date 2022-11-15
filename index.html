@@ -14,87 +14,34 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <h1>Budget App</h1>
+    <div class="heading">
+      <h1>Budget App</h1>
+      <h2 id="greeting">Welcome,</h2>
+    </div>
 
     <main class="main">
       <div class="info">
         <div class="box box--1">
           <i class="fa-solid fa-money-bill"></i>
           <h2>BUDGET</h2>
-          <p>$0</p>
+          <p id="budget">$0</p>
         </div>
 
         <div class="box box--2">
           <i class="fa-solid fa-credit-card"></i>
           <h2>EXPENSES</h2>
-          <p>$0</p>
+          <p id="expenses">$0</p>
         </div>
 
         <div class="box box--3">
           <i class="fa-solid fa-scale-balanced"></i>
           <h2>BALANCE</h2>
-          <p>$0</p>
+          <p id="balance">$0</p>
         </div>
       </div>
 
       <div class="content">
-        <ul class="expenses">
-          <li class="expense">
-            <div class="expense-value">
-              <span>expense 1</span><span>$50</span>
-            </div>
-
-            <div>
-              <p>31/08/2022</p>
-              <i class="fa-solid fa-pen-to-square"></i
-              ><i class="fa-solid fa-trash"></i>
-            </div>
-          </li>
-
-          <li class="loan">
-            <div class="expense-value"><span>loan 1</span><span>$50</span></div>
-
-            <div>
-              <p>31/08/2022</p>
-              <i class="fa-solid fa-pen-to-square"></i
-              ><i class="fa-solid fa-trash"></i>
-            </div>
-          </li>
-
-          <li class="expense">
-            <div class="expense-value">
-              <span>expense 2</span><span>$50</span>
-            </div>
-
-            <div>
-              <p>31/08/2022</p>
-              <i class="fa-solid fa-pen-to-square"></i
-              ><i class="fa-solid fa-trash"></i>
-            </div>
-          </li>
-
-          <li class="expense">
-            <div class="expense-value">
-              <span>expense 3</span><span>$50</span>
-            </div>
-
-            <div>
-              <p>31/08/2022</p>
-              <i class="fa-solid fa-pen-to-square"></i
-              ><i class="fa-solid fa-trash"></i>
-            </div>
-          </li>
-
-          <li class="loan">
-            <div class="expense-value"><span>loan 2</span><span>$50</span></div>
-
-            <div>
-              <p>31/08/2022</p>
-              <i class="fa-solid fa-pen-to-square"></i
-              ><i class="fa-solid fa-trash"></i>
-            </div>
-          </li>
-        </ul>
+        <ul id="expensesAndLoans" class="expensesAndLoans"></ul>
 
         <div class="forms">
           <form class="form form--1">
