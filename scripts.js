@@ -1,103 +1,162 @@
-const expensesList = document.getElementById("expensesAndLoans");
-const budgetEl = document.getElementById("budget");
+const greetingEl = document.getElementById("greeting");
+const transactionsList = document.getElementById("transactions");
+
 const expensesEl = document.getElementById("expenses");
 const balanceEl = document.getElementById("balance");
-const greetingEl = document.getElementById("greeting");
+const budgetEl = document.getElementById("budget");
 
-const expensesAndLoans = [
-  {
-    type: "expense",
-    name: "Car insurance",
-    amount: 250,
-    date: new Date("2022-11-07T03:24:00"),
-  },
-  {
-    type: "expense",
-    name: "Rent",
-    amount: 1250,
-    date: new Date("2022-11-11T12:04:00"),
-  },
-  {
-    type: "expense",
-    name: "Health insurance",
-    amount: 300,
-    date: new Date("2022-11-05T08:00:00"),
-  },
-  {
-    type: "loan",
-    name: "Personal Loan",
-    amount: 500,
-    date: new Date("2022-11-07T02:10:00"),
-  },
-  {
-    type: "loan",
-    name: "Student Loan",
-    amount: 100,
-    date: new Date("2022-01-17T14:00:00"),
-  },
-];
+// BUDGET FORM
+const budgetForm = document.getElementById("budget-form");
+const budgetBtn = document.getElementById("budget-btn");
+const budgetErr = document.getElementById("budget-err");
+
+// TRANSACTION FORM
+const transactionForm = document.getElementById("transaction-form");
+const transactionValue = document.getElementById("transaction-value");
+const transactionBtn = document.getElementById("transaction-btn");
+const transactionErr = document.getElementById("transaction-err");
+
+// FUNCTIONS
+const formatInnerTextHandler = (amount) =>
+  `${amount < 0 ? "- " : ""}$${Math.abs(amount)}`;
 
 const getName = () => {
   let response = prompt("Welcome! What's your name?");
-
   // loop runs while response is a number
   while (!isNaN(+response) || response.length > 15) {
     response = prompt("That's not a valid name, try again!");
   }
 
-  return response;
+  localStorage.setItem("username", response);
 };
 
-const getBudget = () => {
-  let response = prompt(`${username}, what's your budget?`);
-
-  // loop runs while response is not a number
-  while (isNaN(+response) || response <= 0) {
-    response = prompt("That's not a valid budget, try again!");
-  }
-
-  return response;
+const updatBudgetHandler = (budget) => {
+  localStorage.setItem("budget", budget);
+  initHandler();
 };
 
-const username = getName();
-const budget = getBudget();
+const updateExpensesAmount = () => {
+  const transactionsList = JSON.parse(localStorage.getItem("transactions"));
 
-if (username && budget) {
-  alert(`Welcome, ${username}! You have a budget of $${budget}`);
-}
+  const expensesAmount = transactionsList
+    .map((transaction) =>
+      transaction.type === "loan" ? -transaction.amount : transaction.amount
+    )
+    .reduce((prev, curr) => prev + curr, 0);
 
-greetingEl.textContent += ` ${username}!`;
+  return expensesAmount;
+};
 
-expensesAndLoans
-  .sort((objA, objB) => Number(objB.date) - Number(objA.date))
-  .forEach(({ type }, i) => {
-    expensesList.innerHTML += `<li class="${
-      type === "expense" ? "expense" : "loan"
+const errorMessageHandler = (
+  formElement,
+  messageEl,
+  msg,
+  state = "visible"
+) => {
+  formElement.style.borderColor = msg ? "#dc143c" : "#e6e6e6";
+  messageEl.innerText = msg;
+  messageEl.style.display = state === "visible" ? "block" : "none";
+};
+
+const updateTransactionList = () => {
+  transactionsList.innerHTML = "";
+
+  const listElements = JSON.parse(localStorage.getItem("transactions"));
+
+  listElements.forEach((curr) => {
+    transactionsList.innerHTML += `<li class="${
+      curr.type === "expense" ? "expense" : "loan"
     }">
-        <div class="expense-value">
-          <span>${expensesAndLoans[i].name}</span><span>$${
-      expensesAndLoans[i].amount
-    }</span>
-        </div>
-        <div>
-          <p>${expensesAndLoans[i].date.toLocaleDateString("es-ES")}</p>
-          <i class="fa-solid fa-pen-to-square"></i
-          ><i class="fa-solid fa-trash"></i>
-        </div>
-      </li>`;
+      <div class="expense-value">
+        <span>${curr.name}</span><span>$${curr.amount}</span>
+      </div>
+      <div>
+        <p>${new Date(curr.date).toLocaleString()}</p>
+        <i class="fa-solid fa-pen-to-square"></i
+        ><i class="fa-solid fa-trash"></i>
+      </div>
+    </li>`;
+  });
+};
+
+// INFORMATION UPDATER FUNCTION
+const initHandler = () => {
+  if (!localStorage.getItem("transactions"))
+    localStorage.setItem("transactions", JSON.stringify([]));
+  updateTransactionList();
+
+  if (!localStorage.getItem("username")) getName();
+  greetingEl.innerText = `Welcome, ${localStorage.getItem("username")}!`;
+
+  const budget = localStorage.getItem("budget");
+  const expensesAmount = updateExpensesAmount();
+
+  budgetEl.innerText = `$${budget || 0}`;
+  expensesEl.innerText = formatInnerTextHandler(expensesAmount);
+  balanceEl.innerText = `$${+budget - expensesAmount}`;
+};
+initHandler(); // to keep information after reloading page
+
+// EVENTS
+// BUDGET FORM EVENT
+budgetBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const budgetEl = budgetForm.elements["budget"];
+  const budget = budgetEl.value;
+
+  if (isNaN(+budget) || budget.trim().length === 0)
+    return errorMessageHandler(
+      budgetEl,
+      budgetErr,
+      "Invalid value! Please, select a number."
+    );
+
+  if (typeof +budget === "number" && +budget < 0)
+    return errorMessageHandler(
+      budgetEl,
+      budgetErr,
+      "Invalid value! Please, select a number higher than 0 (e.g. 100)."
+    );
+
+  errorMessageHandler(budgetEl, budgetErr, null, "invisible");
+  updatBudgetHandler(budget);
+});
+
+//  TRANSACTION FORM EVENT
+transactionBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const transactionValue = transactionForm.elements["transaction-value"].value;
+  const transactionName = transactionForm.elements["transaction-name"].value;
+
+  if (isNaN(+transactionValue) || transactionValue.trim().length === 0)
+    return errorMessageHandler(
+      transactionValue,
+      transactionErr,
+      "Invalid value! Please, select a number."
+    );
+
+  if (typeof +transactionValue === "number" && +transactionValue < 0)
+    return errorMessageHandler(
+      transactionValue,
+      transactionErr,
+      "Invalid value! Please, select a number higher than 0 (e.g. 100)."
+    );
+
+  const type = transactionForm.elements["radio-loan"].checked
+    ? "loan"
+    : "expense";
+
+  const transactions = JSON.parse(localStorage.getItem("transactions"));
+
+  transactions.unshift({
+    type: type,
+    name: transactionName,
+    amount: +transactionValue,
+    date: new Date(),
   });
 
-budgetEl.textContent = `$${budget}`;
-
-const expensesAmount = expensesAndLoans
-  .map((obj) => {
-    return obj.type === "loan" ? -obj.amount : obj.amount;
-  })
-  .reduce((prev, curr) => prev + curr, 0);
-
-const innerTextHandler = (amount) => {
-  return `${amount < 0 ? "- " : ""}$${Math.abs(amount)}`;
-};
-
-expensesEl.innerText = innerTextHandler(expensesAmount);
-balanceEl.innerText = innerTextHandler(budget - expensesAmount);
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  updateTransactionList();
+});

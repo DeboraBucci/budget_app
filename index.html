@@ -14,12 +14,14 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <!-- HEADING -->
     <div class="heading">
       <h1>Budget App</h1>
-      <h2 id="greeting">Welcome,</h2>
+      <h2 id="greeting">Welcome!</h2>
     </div>
 
     <main class="main">
+      <!-- BUDGET / EXPENSES / BALANCE -->
       <div class="info">
         <div class="box box--1">
           <i class="fa-solid fa-money-bill"></i>
@@ -41,27 +43,54 @@
       </div>
 
       <div class="content">
-        <ul id="expensesAndLoans" class="expensesAndLoans"></ul>
+        <!--TRANSACTIONS -->
+        <ul id="transactions" class="transactions"></ul>
 
         <div class="forms">
-          <form class="form form--1">
+          <!-- FORM ONE -->
+          <form id="budget-form" class="form form--1">
             <label>Enter your budget</label>
-            <input type="text" />
-            <button type="submit">Calculate</button>
+            <input type="text" min="0" name="budget" />
+            <p id="budget-err" class="budget-err"></p>
+            <button id="budget-btn" type="submit">Calculate</button>
           </form>
 
-          <form class="form form--2">
-            <label>Enter the desired loan</label>
-            <input type="text" />
-            <button type="submit">Add Loan</button>
-          </form>
+          <!-- FORM TWO -->
+          <form id="transaction-form" class="form form--2">
+            <label>Enter transaction's name</label>
+            <input type="text" name="transaction-name" />
+            <label>Enter the desired value</label>
+            <input
+              type="text"
+              id="transaction-value"
+              name="transaction-value"
+            />
+            <p id="transaction-err" class="transaction-err"></p>
 
-          <form class="form form--3">
-            <label>Enter expense title</label>
-            <input type="text" />
-            <label>Enter expense amount</label>
-            <input type="text" />
-            <button type="submit">Add expense</button>
+            <div class="transaction-form__radio-btns">
+              <div>
+                <input
+                  checked
+                  type="radio"
+                  id="radio-expense"
+                  name="transaction-type"
+                  value="expense"
+                />
+                <label for="expense">Expense</label>
+              </div>
+
+              <div>
+                <input
+                  type="radio"
+                  id="radio-loan"
+                  name="transaction-type"
+                  value="loan"
+                />
+                <label for="transaction">Loan</label>
+              </div>
+            </div>
+
+            <button id="transaction-btn" type="submit">Add transaction</button>
           </form>
         </div>
       </div>
