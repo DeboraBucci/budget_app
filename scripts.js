@@ -15,6 +15,7 @@ const transactionForm = document.getElementById("transaction-form");
 const transactionValue = document.getElementById("transaction-value");
 const transactionBtn = document.getElementById("transaction-btn");
 const transactionErr = document.getElementById("transaction-err");
+const transactionNameErr = document.getElementById("transaction-name-err");
 
 // FUNCTIONS
 const formatInnerTextHandler = (amount) =>
@@ -56,6 +57,25 @@ const errorMessageHandler = (
   formElement.style.borderColor = msg ? "#dc143c" : "#e6e6e6";
   messageEl.innerText = msg;
   messageEl.style.display = state === "visible" ? "block" : "none";
+};
+
+const valueErrorsInForm = (value, el, err) => {
+  if (isNaN(+value) || value.trim().length === 0) {
+    errorMessageHandler(el, err, "Invalid value! Please, select a number.");
+    return false;
+  }
+
+  if (typeof +value === "number" && +value < 0) {
+    errorMessageHandler(
+      el,
+      err,
+      "Invalid value! Please, select a number higher than 0 (e.g. 100)."
+    );
+    return false;
+  }
+
+  errorMessageHandler(budgetEl, budgetErr, null, "invisible");
+  return true;
 };
 
 const updateTransactionList = () => {
@@ -105,19 +125,8 @@ budgetBtn.addEventListener("click", (e) => {
   const budgetEl = budgetForm.elements["budget"];
   const budget = budgetEl.value;
 
-  if (isNaN(+budget) || budget.trim().length === 0)
-    return errorMessageHandler(
-      budgetEl,
-      budgetErr,
-      "Invalid value! Please, select a number."
-    );
-
-  if (typeof +budget === "number" && +budget < 0)
-    return errorMessageHandler(
-      budgetEl,
-      budgetErr,
-      "Invalid value! Please, select a number higher than 0 (e.g. 100)."
-    );
+  const noErrorsInForm = valueErrorsInForm(budget, budgetEl, budgetErr);
+  if (!noErrorsInForm) return;
 
   errorMessageHandler(budgetEl, budgetErr, null, "invisible");
   updatBudgetHandler(budget);
@@ -127,22 +136,30 @@ budgetBtn.addEventListener("click", (e) => {
 transactionBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
+  const transactionEl = transactionForm.elements["transaction-value"];
   const transactionValue = transactionForm.elements["transaction-value"].value;
+  const transactionNameEl = transactionForm.elements["transaction-name"];
   const transactionName = transactionForm.elements["transaction-name"].value;
 
-  if (isNaN(+transactionValue) || transactionValue.trim().length === 0)
-    return errorMessageHandler(
-      transactionValue,
-      transactionErr,
-      "Invalid value! Please, select a number."
-    );
+  // CHECK FOR ERRORS IN THE VALUE INPUT
+  const noErrorsInForm = valueErrorsInForm(
+    transactionValue,
+    transactionEl,
+    transactionErr
+  );
 
-  if (typeof +transactionValue === "number" && +transactionValue < 0)
+  if (!noErrorsInForm) return;
+  errorMessageHandler(transactionEl, transactionErr, null, "invisible");
+
+  // CHECK FOR ERRORS IN THE NAME INPUT
+  if (transactionName.trim().length === 0)
     return errorMessageHandler(
-      transactionValue,
-      transactionErr,
-      "Invalid value! Please, select a number higher than 0 (e.g. 100)."
+      transactionNameEl,
+      transactionNameErr,
+      "Invalid name!",
+      "visible"
     );
+  errorMessageHandler(transactionNameEl, transactionNameErr, null, "invisible");
 
   const type = transactionForm.elements["radio-loan"].checked
     ? "loan"

@@ -234,7 +234,8 @@ li {
 }
 
 .budget-err,
-.transaction-err {
+.transaction-err,
+.transaction-name-err {
   font-size: 1.2rem;
   color: #dc143c;
   display: none;
