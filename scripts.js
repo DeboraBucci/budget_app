@@ -3,7 +3,7 @@ const transactionsList = document.getElementById("transactions");
 
 const expensesEl = document.getElementById("expenses");
 const balanceEl = document.getElementById("balance");
-const budgetEl = document.getElementById("budget");
+const budgetEl = document.getElementById("curr-budget");
 
 // BUDGET FORM
 const budgetForm = document.getElementById("budget-form");
@@ -18,22 +18,26 @@ const transactionErr = document.getElementById("transaction-err");
 const transactionNameErr = document.getElementById("transaction-name-err");
 
 // FUNCTIONS
+const updateElementsDisplay = () => {
+  if (localStorage.getItem("username")) {
+    document.querySelector(".login__content").style.display = "none";
+    document.querySelector(".main").style.display = "block";
+    document.querySelector(".navbar__cta").style.display = "block";
+    document.querySelector(".navbar__greeting").style.display = "block";
+  } else {
+    document.querySelector(".login__content").style.display = "block";
+    document.querySelector(".main").style.display = "none";
+    document.querySelector(".navbar__cta").style.display = "none";
+    document.querySelector(".navbar__greeting").style.display = "none";
+  }
+};
+
 const formatInnerTextHandler = (amount) =>
   `${amount < 0 ? "- " : ""}$${Math.abs(amount)}`;
 
-const getName = () => {
-  let response = prompt("Welcome! What's your name?");
-  // loop runs while response is a number
-  while (!isNaN(+response) || response.length > 15) {
-    response = prompt("That's not a valid name, try again!");
-  }
-
-  localStorage.setItem("username", response);
-};
-
 const updatBudgetHandler = (budget) => {
   localStorage.setItem("budget", budget);
-  initHandler();
+  updateState();
 };
 
 const updateExpensesAmount = () => {
@@ -100,22 +104,23 @@ const updateTransactionList = () => {
 };
 
 // INFORMATION UPDATER FUNCTION
-const initHandler = () => {
+const updateState = () => {
+  updateElementsDisplay();
+
   if (!localStorage.getItem("transactions"))
     localStorage.setItem("transactions", JSON.stringify([]));
   updateTransactionList();
 
-  if (!localStorage.getItem("username")) getName();
   greetingEl.innerText = `Welcome, ${localStorage.getItem("username")}!`;
 
   const budget = localStorage.getItem("budget");
   const expensesAmount = updateExpensesAmount();
 
-  budgetEl.innerText = `$${budget || 0}`;
+  budgetEl.innerText = formatInnerTextHandler(budget);
   expensesEl.innerText = formatInnerTextHandler(expensesAmount);
-  balanceEl.innerText = `$${+budget - expensesAmount}`;
+  balanceEl.innerText = formatInnerTextHandler(+budget - expensesAmount);
 };
-initHandler(); // to keep information after reloading page
+updateState(); // to keep information after reloading page
 
 // EVENTS
 // BUDGET FORM EVENT
@@ -176,4 +181,28 @@ transactionBtn.addEventListener("click", (e) => {
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
   updateTransactionList();
+  updateExpensesAmount();
+  updateState();
+});
+
+// LOGIN
+const loginBtn = document.getElementById("login__btn");
+const loginForm = document.getElementById("login__form");
+
+const navigateToPage = () => window.navigate("index.html");
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const formData = new FormData(document.getElementById("login__form"));
+  for (const [name, value] of formData.entries()) {
+    localStorage.setItem(name, value);
+  }
+
+  updateElementsDisplay();
+  updateState();
+});
+
+document.querySelector(".btn-logout").addEventListener("click", () => {
+  localStorage.clear();
+  updateState();
 });

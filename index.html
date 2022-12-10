@@ -14,10 +14,35 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <!-- HEADING -->
-    <div class="heading">
-      <h1>Budget App</h1>
-      <h2 id="greeting">Welcome!</h2>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="navbar__content">
+        <h1 class="navbar__title">Budget App</h1>
+        <div>
+          <h2 id="greeting" class="navbar__greeting">Welcome!</h2>
+          <div class="navbar__cta">
+            <button class="btn-logout">Logout</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- LOGIN -->
+    <div class="login__content">
+      <h2>Login</h2>
+      <form id="login__form" class="login__form">
+        <div class="login__input-box">
+          <label for="username">Name</label>
+          <input id="username" name="username" type="text" />
+        </div>
+
+        <div class="login__input-box">
+          <label for="budget">Initial Budget</label>
+          <input id="budget" name="budget" type="number" min="0" />
+        </div>
+
+        <button id="login__btn" class="login__btn">Login</button>
+      </form>
     </div>
 
     <main class="main">
@@ -26,7 +51,7 @@
         <div class="box box--1">
           <i class="fa-solid fa-money-bill"></i>
           <h2>BUDGET</h2>
-          <p id="budget">$0</p>
+          <p id="curr-budget">$0</p>
         </div>
 
         <div class="box box--2">
@@ -52,7 +77,7 @@
             <label>Enter your budget</label>
             <input type="text" min="0" name="budget" />
             <p id="budget-err" class="budget-err"></p>
-            <button id="budget-btn" type="submit">Calculate</button>
+            <button id="budget-btn" type="submit">Update</button>
           </form>
 
           <!-- FORM TWO -->
