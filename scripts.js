@@ -32,8 +32,47 @@ const updateElementsDisplay = () => {
   }
 };
 
+const deleteBtnEvent = () => {
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+        customClass: "swal-custom-class",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const transactionsList = JSON.parse(
+            localStorage.getItem("transactions")
+          );
+          const filteredTransactionList = transactionsList.filter(
+            (currTransaction) => currTransaction.id !== e.target.dataset.id
+          );
+
+          localStorage.setItem(
+            "transactions",
+            JSON.stringify(filteredTransactionList)
+          );
+
+          updateState();
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+            customClass: "swal-custom-class",
+          });
+        }
+      });
+    });
+  });
+};
+
 const formatInnerTextHandler = (amount) =>
-  `${amount < 0 ? "- " : ""}$${Math.abs(amount)}`;
+  `${amount < 0 ? "- " : ""}$${Math.abs(amount).toFixed(2)}`;
 
 const updatBudgetHandler = (budget) => {
   localStorage.setItem("budget", budget);
@@ -97,10 +136,12 @@ const updateTransactionList = () => {
       <div>
         <p>${new Date(curr.date).toLocaleString()}</p>
         <i class="fa-solid fa-pen-to-square"></i
-        ><i class="fa-solid fa-trash"></i>
+        ><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i>
       </div>
     </li>`;
   });
+
+  deleteBtnEvent();
 };
 
 // INFORMATION UPDATER FUNCTION
@@ -177,6 +218,7 @@ transactionBtn.addEventListener("click", (e) => {
     name: transactionName,
     amount: +transactionValue,
     date: new Date(),
+    id: transactionName + Math.random() * 100,
   });
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
@@ -197,6 +239,14 @@ loginForm.addEventListener("submit", (e) => {
   for (const [name, value] of formData.entries()) {
     localStorage.setItem(name, value);
   }
+
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: "Successfully logged in :)",
+    showConfirmButton: false,
+    timer: 1500,
+  });
 
   updateElementsDisplay();
   updateState();

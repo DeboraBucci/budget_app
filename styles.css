@@ -307,3 +307,11 @@ li {
 .navbar__cta {
   display: none;
 }
+
+.delete-btn {
+  cursor: pointer;
+}
+
+.swal-custom-class {
+  font-size: 150% !important;
+}
