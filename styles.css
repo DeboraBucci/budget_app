@@ -358,3 +358,12 @@ thead tr {
 #balance {
   color: green;
 }
+
+.transactions-date {
+  color: rgb(102, 102, 102);
+}
+
+.transactions th:nth-child(3),
+.transactions td:nth-child(3) {
+  width: 40%;
+}

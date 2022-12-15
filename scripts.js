@@ -1,6 +1,9 @@
 const greetingEl = document.getElementById("greeting");
 const transactionBody = document.getElementById("transactions-body");
 
+const dateFormat = document.getElementById("date-format");
+const sorting = document.getElementById("sorting");
+
 const btnDeleteAllTransactions = document.getElementById(
   "btn__delete-all-transactions"
 );
@@ -150,7 +153,7 @@ const updateTransactionList = () => {
       <td class="transaction-amt">${curr.type === "expense" ? "-" : ""} $${
       curr.amount
     }</td>
-      <td>${new Date(curr.date).toLocaleString()}</td>
+      <td class='transactions-date'>${new Date(curr.date).toLocaleString()}</td>
       <td><i class="fa-solid fa-pen-to-square"></i
          ><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i></td>
     </tr>
@@ -320,6 +323,36 @@ btnDeleteAllTransactions.addEventListener("click", () => {
         text: "Your transactions have been deleted.",
         icon: "success",
         customClass: "swal-custom-class",
+      });
+    }
+  });
+});
+
+dateFormat.addEventListener("click", (e) => {
+  const formatOpt = e.target.value;
+  const transactionsDates = document.querySelectorAll(".transactions-date");
+
+  transactionsDates.forEach((transactionDate) => {
+    const date = new Date(transactionDate.innerHTML);
+
+    if (formatOpt === "ISO") {
+      transactionDate.innerHTML = date.toISOString().slice(0, 10);
+    }
+
+    if (formatOpt === "short" || formatOpt === "default") {
+      transactionDate.innerHTML = date.toLocaleString();
+    }
+
+    if (formatOpt === "short") {
+      transactionDate.innerHTML = date.toLocaleDateString();
+    }
+
+    if (formatOpt === "long") {
+      transactionDate.innerHTML = date.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
     }
   });
