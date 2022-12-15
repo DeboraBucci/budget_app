@@ -102,11 +102,17 @@
             </select>
 
             <select name="sorting" id="sorting">
-              <option default>Sort by ...</option>
-              <option>creation time</option>
-              <option>date</option>
-              <option>name</option>
-              <option>amount</option>
+              <option value="default" default>Sort by ...</option>
+              <option value="date">date</option>
+              <option value="name">name</option>
+              <option value="amount">amount</option>
+            </select>
+
+            <select name="show-transactions" id="show-transactions">
+              <option value="default" default>Show ...</option>
+              <option value="all" default>all</option>
+              <option value="expenses">expenses</option>
+              <option value="loans">loans</option>
             </select>
           </div>
         </div>

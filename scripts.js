@@ -26,14 +26,26 @@ const transactionNameErr = document.getElementById("transaction-name-err");
 const transactionDateErr = document.getElementById("transaction-date-err");
 
 // FUNCTIONS
-const sortDateHandler = (arr, order) => {
-  if (order === "asc") {
-    arr.sort(function (a, b) {
-      return new Date(b.date) - new Date(a.date);
-    });
-  } else {
-    arr.sort(function (a, b) {
-      return new Date(a.date) - new Date(b.date);
+
+const dateFormatHandler = (type, date) => {
+  if (type === "default") {
+    return new Date(date).toLocaleString();
+  }
+
+  if (type === "ISO") {
+    return new Date(date).toISOString().slice(0, 10);
+  }
+
+  if (type === "short") {
+    return new Date(date).toLocaleDateString();
+  }
+
+  if (type === "long") {
+    return new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   }
 };
@@ -147,6 +159,8 @@ const updateTransactionList = () => {
   const listElements = JSON.parse(localStorage.getItem("transactions"));
 
   listElements.forEach((curr) => {
+    const date = dateFormatHandler(curr.date.type, curr.date.value);
+
     transactionBody.innerHTML += `
     <tr class="${curr.type === "expense" ? "expense" : "loan"}">
       <td>${curr.name}</td>
@@ -195,6 +209,9 @@ budgetBtn.addEventListener("click", (e) => {
 
   errorMessageHandler(budgetEl, budgetErr, null, "invisible");
   updatBudgetHandler(budget);
+
+  // CLEAR INPUTS
+  budgetEl.value = "";
 });
 
 //  TRANSACTION FORM EVENT
@@ -268,9 +285,15 @@ transactionBtn.addEventListener("click", (e) => {
   }).showToast();
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
+
   updateTransactionList();
   updateExpensesAmount();
   updateState();
+
+  // CLEAR INPUTS
+  transactionForm.elements["transaction-name"].value = "";
+  transactionForm.elements["transaction-value"].value = "";
+  transactionForm.elements["transaction-date"].value = "";
 });
 
 // LOGIN
@@ -335,25 +358,38 @@ dateFormat.addEventListener("click", (e) => {
   transactionsDates.forEach((transactionDate) => {
     const date = new Date(transactionDate.innerHTML);
 
-    if (formatOpt === "ISO") {
-      transactionDate.innerHTML = date.toISOString().slice(0, 10);
-    }
-
-    if (formatOpt === "short" || formatOpt === "default") {
-      transactionDate.innerHTML = date.toLocaleString();
-    }
-
-    if (formatOpt === "short") {
-      transactionDate.innerHTML = date.toLocaleDateString();
-    }
-
-    if (formatOpt === "long") {
-      transactionDate.innerHTML = date.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    }
+    transactionDate.innerHTML = dateFormatHandler(formatOpt, date);
   });
+});
+
+sorting.addEventListener("click", (e) => {
+  const sortingOpt = e.target.value;
+  const transactionList = JSON.parse(localStorage.getItem("transactions"));
+
+  let updatedTransactionList = [];
+
+  if (sortingOpt === "amount") {
+    updatedTransactionList = transactionList.sort(function (a, b) {
+      return b.amount - a.amount;
+    });
+  } else if (sortingOpt === "date") {
+    updatedTransactionList = transactionList.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+  } else if (sortingOpt === "name") {
+    updatedTransactionList = transactionList.sort(function (a, b) {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+  } else {
+    return;
+  }
+
+  localStorage.setItem("transactions", JSON.stringify(updatedTransactionList));
+  updateState();
 });
