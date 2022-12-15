@@ -1,5 +1,9 @@
 const greetingEl = document.getElementById("greeting");
-const transactionsList = document.getElementById("transactions");
+const transactionBody = document.getElementById("transactions-body");
+
+const btnDeleteAllTransactions = document.getElementById(
+  "btn__delete-all-transactions"
+);
 
 const expensesEl = document.getElementById("expenses");
 const balanceEl = document.getElementById("balance");
@@ -19,6 +23,18 @@ const transactionNameErr = document.getElementById("transaction-name-err");
 const transactionDateErr = document.getElementById("transaction-date-err");
 
 // FUNCTIONS
+const sortDateHandler = (arr, order) => {
+  if (order === "asc") {
+    arr.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+  } else {
+    arr.sort(function (a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+  }
+};
+
 const updateElementsDisplay = () => {
   if (localStorage.getItem("username")) {
     document.querySelector(".login__content").style.display = "none";
@@ -47,10 +63,10 @@ const deleteBtnEvent = () => {
         customClass: "swal-custom-class",
       }).then((result) => {
         if (result.isConfirmed) {
-          const transactionsList = JSON.parse(
+          const transactionBody = JSON.parse(
             localStorage.getItem("transactions")
           );
-          const filteredTransactionList = transactionsList.filter(
+          const filteredTransactionList = transactionBody.filter(
             (currTransaction) => currTransaction.id !== e.target.dataset.id
           );
 
@@ -62,7 +78,7 @@ const deleteBtnEvent = () => {
           updateState();
           Swal.fire({
             title: "Deleted!",
-            text: "Your file has been deleted.",
+            text: "Your transaction has been deleted.",
             icon: "success",
             customClass: "swal-custom-class",
           });
@@ -81,9 +97,9 @@ const updatBudgetHandler = (budget) => {
 };
 
 const updateExpensesAmount = () => {
-  const transactionsList = JSON.parse(localStorage.getItem("transactions"));
+  const transactionBody = JSON.parse(localStorage.getItem("transactions"));
 
-  const expensesAmount = transactionsList
+  const expensesAmount = transactionBody
     .map((transaction) =>
       transaction.type === "loan" ? -transaction.amount : transaction.amount
     )
@@ -123,23 +139,22 @@ const valueErrorsInForm = (value, el, err) => {
 };
 
 const updateTransactionList = () => {
-  transactionsList.innerHTML = "";
+  transactionBody.innerHTML = "";
 
   const listElements = JSON.parse(localStorage.getItem("transactions"));
 
   listElements.forEach((curr) => {
-    transactionsList.innerHTML += `<li class="${
-      curr.type === "expense" ? "expense" : "loan"
-    }">
-      <div class="expense-value">
-        <span>${curr.name}</span><span>$${curr.amount}</span>
-      </div>
-      <div>
-        <p>${new Date(curr.date).toLocaleString()}</p>
-        <i class="fa-solid fa-pen-to-square"></i
-        ><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i>
-      </div>
-    </li>`;
+    transactionBody.innerHTML += `
+    <tr class="${curr.type === "expense" ? "expense" : "loan"}">
+      <td>${curr.name}</td>
+      <td class="transaction-amt">${curr.type === "expense" ? "-" : ""} $${
+      curr.amount
+    }</td>
+      <td>${new Date(curr.date).toLocaleString()}</td>
+      <td><i class="fa-solid fa-pen-to-square"></i
+         ><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i></td>
+    </tr>
+    `;
   });
 
   deleteBtnEvent();
@@ -283,4 +298,29 @@ loginForm.addEventListener("submit", (e) => {
 document.querySelector(".btn-logout").addEventListener("click", () => {
   localStorage.clear();
   updateState();
+});
+
+btnDeleteAllTransactions.addEventListener("click", () => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will lose all your transactions",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete them!",
+    customClass: "swal-custom-class",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.setItem("transactions", JSON.stringify([]));
+
+      updateState();
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your transactions have been deleted.",
+        icon: "success",
+        customClass: "swal-custom-class",
+      });
+    }
+  });
 });

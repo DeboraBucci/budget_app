@@ -42,10 +42,6 @@ input {
   border: 1px solid #d1d1d1;
 }
 
-li {
-  list-style: none;
-}
-
 .navbar {
   width: 100%;
   padding-bottom: 1rem;
@@ -75,7 +71,6 @@ li {
 .main {
   display: flex;
   flex-direction: column;
-  width: 70%;
   margin: 0 auto;
   display: none;
 }
@@ -93,7 +88,7 @@ li {
   display: flex;
   justify-content: center;
   gap: 10rem;
-  margin: 8rem auto 6rem auto;
+  margin: 5rem auto 3rem auto;
 }
 
 .box {
@@ -123,14 +118,17 @@ li {
 
 /* TRANSACTIONS */
 .transactions {
-  overflow-y: auto;
   height: 60rem;
-  width: 50%;
+  width: 100%;
   border: 1px solid #e6e6e6;
   font-size: 1.6rem;
 }
 
-.transactions li {
+.transactions-body {
+  overflow-y: auto;
+}
+
+.transactions tr {
   width: 100%;
   padding: 1rem;
   background-color: #e6e6e6;
@@ -139,26 +137,33 @@ li {
   gap: 2rem;
 }
 
-.transactions li div {
+.transactions td,
+.transactions th {
+  width: 25%;
+  text-align: left;
+}
+
+.transactions td:last-child {
+  display: flex;
+  justify-content: right;
+  gap: 2rem;
+}
+
+.transactions tr div {
   display: flex;
   gap: 2rem;
 }
 
-.transactions li:nth-child(even) {
+.transactions tr:nth-child(even) {
   background-color: transparent;
 }
 
-.expense span {
+.expense .transaction-amt {
   color: rgb(194, 66, 91);
 }
 
-.loan span {
+.loan .transaction-amt {
   color: rgb(54, 124, 54);
-}
-
-.expense-value {
-  width: 30%;
-  justify-content: space-between;
 }
 
 /* FORMS */
@@ -168,7 +173,7 @@ li {
   justify-content: space-between;
   gap: 2rem;
   height: 60rem;
-  width: 40%;
+  width: 50%;
 }
 
 .form {
@@ -316,4 +321,40 @@ li {
 .swal-custom-class,
 .custom-toast-class {
   font-size: 150% !important;
+}
+
+.transactions__container {
+  width: 80%;
+}
+
+thead {
+  background-color: #1c87c9;
+  color: #ffffff;
+  display: table-header-group;
+}
+
+thead tr {
+  background-color: transparent !important;
+}
+
+.transactions-cta {
+  margin-top: 1rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.transactions-cta select {
+  width: 20rem;
+}
+
+#curr-budget {
+  color: rgb(75, 75, 75);
+}
+
+#expenses {
+  color: #d83232;
+}
+
+#balance {
+  color: green;
 }
