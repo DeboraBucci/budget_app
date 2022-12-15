@@ -258,7 +258,8 @@ li {
 
 .budget-err,
 .transaction-err,
-.transaction-name-err {
+.transaction-name-err,
+.transaction-date-err {
   font-size: 1.2rem;
   color: #dc143c;
   display: none;
@@ -312,6 +313,7 @@ li {
   cursor: pointer;
 }
 
-.swal-custom-class {
+.swal-custom-class,
+.custom-toast-class {
   font-size: 150% !important;
 }

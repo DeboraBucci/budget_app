@@ -16,6 +16,7 @@ const transactionValue = document.getElementById("transaction-value");
 const transactionBtn = document.getElementById("transaction-btn");
 const transactionErr = document.getElementById("transaction-err");
 const transactionNameErr = document.getElementById("transaction-name-err");
+const transactionDateErr = document.getElementById("transaction-date-err");
 
 // FUNCTIONS
 const updateElementsDisplay = () => {
@@ -184,8 +185,24 @@ transactionBtn.addEventListener("click", (e) => {
 
   const transactionEl = transactionForm.elements["transaction-value"];
   const transactionValue = transactionForm.elements["transaction-value"].value;
+
   const transactionNameEl = transactionForm.elements["transaction-name"];
-  const transactionName = transactionForm.elements["transaction-name"].value;
+  const transactionNameValue =
+    transactionForm.elements["transaction-name"].value;
+
+  const transactionDateEl = transactionForm.elements["transaction-date"];
+  const transactionDateValue =
+    transactionForm.elements["transaction-date"].value;
+
+  // CHECK FOR EMPTY NAME INPUT
+  if (transactionNameValue.trim().length === 0)
+    return errorMessageHandler(
+      transactionNameEl,
+      transactionNameErr,
+      "Invalid name!",
+      "visible"
+    );
+  errorMessageHandler(transactionNameEl, transactionNameErr, null, "invisible");
 
   // CHECK FOR ERRORS IN THE VALUE INPUT
   const noErrorsInForm = valueErrorsInForm(
@@ -197,15 +214,15 @@ transactionBtn.addEventListener("click", (e) => {
   if (!noErrorsInForm) return;
   errorMessageHandler(transactionEl, transactionErr, null, "invisible");
 
-  // CHECK FOR ERRORS IN THE NAME INPUT
-  if (transactionName.trim().length === 0)
+  // CHECK FOR EMPTY DATE INPUT
+  if (transactionDateValue.trim().length === 0)
     return errorMessageHandler(
-      transactionNameEl,
-      transactionNameErr,
-      "Invalid name!",
+      transactionDateEl,
+      transactionDateErr,
+      "Invalid date!",
       "visible"
     );
-  errorMessageHandler(transactionNameEl, transactionNameErr, null, "invisible");
+  errorMessageHandler(transactionDateEl, transactionDateErr, null, "invisible");
 
   const type = transactionForm.elements["radio-loan"].checked
     ? "loan"
@@ -215,11 +232,22 @@ transactionBtn.addEventListener("click", (e) => {
 
   transactions.unshift({
     type: type,
-    name: transactionName,
+    name: transactionNameValue,
     amount: +transactionValue,
-    date: new Date(),
-    id: transactionName + Math.random() * 100,
+    date: transactionDateValue,
+    id: transactionNameValue + Math.random() * 100,
   });
+
+  Toastify({
+    text: "Transaction added!",
+    duration: 1500,
+    gravity: "top",
+    className: "custom-toast-class",
+    style: {
+      background:
+        "linear-gradient(120deg, rgba(255,5,207,1) 0%, rgba(0,212,255,1) 100%)",
+    },
+  }).showToast();
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
   updateTransactionList();
