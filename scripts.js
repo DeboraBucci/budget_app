@@ -440,15 +440,23 @@ showTransactions.addEventListener("click", (e) => {
   }
 });
 
-const dollarUpdateFunction = () => {
+const fetchInformationHandler = async () => {
+  try {
+    const response = await fetch("https://criptoya.com/api/dolar");
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const dollarUpdateFunction = async () => {
   const dollarOfficial = document.getElementById("official");
   const dollarBlue = document.getElementById("blue");
 
-  fetch("https://criptoya.com/api/dolar")
-    .then((response) => response.json())
-    .then(({ oficial, blue }) => {
-      dollarOfficial.innerHTML += ` ${oficial} ARS`;
-      dollarBlue.innerHTML += ` ${blue} ARS`;
-    });
+  const data = await fetchInformationHandler();
+
+  dollarOfficial.innerHTML += ` ${data.oficial} ARS`;
+  dollarBlue.innerHTML += ` ${data.blue} ARS`;
 };
 dollarUpdateFunction();
