@@ -304,14 +304,13 @@ transactionBtn.addEventListener("click", (e) => {
 const loginBtn = document.getElementById("login__btn");
 const loginForm = document.getElementById("login__form");
 
-const navigateToPage = () => window.navigate("index.html");
-
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const formData = new FormData(document.getElementById("login__form"));
-  for (const [name, value] of formData.entries()) {
-    localStorage.setItem(name, value);
-  }
+  const budgetInput = document.getElementById("budget").value;
+  const usernameInput = document.getElementById("username").value;
+
+  localStorage.setItem("budget", budgetInput);
+  localStorage.setItem("username", usernameInput);
 
   Swal.fire({
     position: "top-end",
@@ -323,6 +322,9 @@ loginForm.addEventListener("submit", (e) => {
 
   updateElementsDisplay();
   updateState();
+
+  document.getElementById("budget").value = "";
+  document.getElementById("username").value = "";
 });
 
 document.querySelector(".btn-logout").addEventListener("click", () => {
@@ -439,13 +441,13 @@ showTransactions.addEventListener("click", (e) => {
 });
 
 const dollarUpdateFunction = () => {
-  const dollarSolidary = document.getElementById("solidary");
+  const dollarOfficial = document.getElementById("official");
   const dollarBlue = document.getElementById("blue");
 
   fetch("https://criptoya.com/api/dolar")
     .then((response) => response.json())
-    .then(({ solidario, blue }) => {
-      dollarSolidary.innerHTML += ` ${solidario} ARS`;
+    .then(({ oficial, blue }) => {
+      dollarOfficial.innerHTML += ` ${oficial} ARS`;
       dollarBlue.innerHTML += ` ${blue} ARS`;
     });
 };
