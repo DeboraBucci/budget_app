@@ -3,6 +3,9 @@ const transactionBody = document.getElementById("transactions-body");
 
 const dateFormat = document.getElementById("date-format");
 const sorting = document.getElementById("sorting");
+const showTransactions = document.getElementById("show-transactions");
+
+const apiKey = "duS1L1sMSy5I1OuLJyp5MyGY1gNHhAv4";
 
 const btnDeleteAllTransactions = document.getElementById(
   "btn__delete-all-transactions"
@@ -26,18 +29,9 @@ const transactionNameErr = document.getElementById("transaction-name-err");
 const transactionDateErr = document.getElementById("transaction-date-err");
 
 // FUNCTIONS
-
 const dateFormatHandler = (type, date) => {
-  if (type === "default") {
-    return new Date(date).toLocaleString();
-  }
-
-  if (type === "ISO") {
+  if (type === "default" || type === "short") {
     return new Date(date).toISOString().slice(0, 10);
-  }
-
-  if (type === "short") {
-    return new Date(date).toLocaleDateString();
   }
 
   if (type === "long") {
@@ -153,23 +147,20 @@ const valueErrorsInForm = (value, el, err) => {
   return true;
 };
 
-const updateTransactionList = () => {
+const updateTransactionList = (transactionsArr) => {
   transactionBody.innerHTML = "";
+  const currency = localStorage.getItem("currency");
+  const currSymbol = currency === "USD" || currency === "ARS" ? "$" : "€";
 
-  const listElements = JSON.parse(localStorage.getItem("transactions"));
-
-  listElements.forEach((curr) => {
-    const date = dateFormatHandler(curr.date.type, curr.date.value);
-
+  transactionsArr.forEach((curr) => {
     transactionBody.innerHTML += `
     <tr class="${curr.type === "expense" ? "expense" : "loan"}">
       <td>${curr.name}</td>
-      <td class="transaction-amt">${curr.type === "expense" ? "-" : ""} $${
-      curr.amount
-    }</td>
-      <td class='transactions-date'>${new Date(curr.date).toLocaleString()}</td>
-      <td><i class="fa-solid fa-pen-to-square"></i
-         ><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i></td>
+      <td class="transaction-amt">${
+        curr.type === "expense" ? "-" : ""
+      } ${currSymbol}${curr.amount}</td>
+      <td class='transactions-date'>${curr.date}</td>
+      <td><i class="fa-solid fa-trash delete-btn" data-id=${curr.id}></i></td>
     </tr>
     `;
   });
@@ -183,7 +174,17 @@ const updateState = () => {
 
   if (!localStorage.getItem("transactions"))
     localStorage.setItem("transactions", JSON.stringify([]));
-  updateTransactionList();
+
+  if (!localStorage.getItem("datetype"))
+    localStorage.setItem("datetype", "short");
+
+  if (!localStorage.getItem("currency"))
+    localStorage.setItem("currency", "USD");
+
+  const transactionsArr = JSON.parse(localStorage.getItem("transactions"));
+  const currency = localStorage.getItem("currency");
+
+  updateTransactionList(transactionsArr);
 
   greetingEl.innerText = `Welcome, ${localStorage.getItem("username")}!`;
 
@@ -269,7 +270,10 @@ transactionBtn.addEventListener("click", (e) => {
     type: type,
     name: transactionNameValue,
     amount: +transactionValue,
-    date: transactionDateValue,
+    date: dateFormatHandler(
+      localStorage.getItem("datetype"),
+      transactionDateValue
+    ),
     id: transactionNameValue + Math.random() * 100,
   });
 
@@ -286,7 +290,7 @@ transactionBtn.addEventListener("click", (e) => {
 
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
-  updateTransactionList();
+  updateTransactionList(transactions);
   updateExpensesAmount();
   updateState();
 
@@ -353,13 +357,25 @@ btnDeleteAllTransactions.addEventListener("click", () => {
 
 dateFormat.addEventListener("click", (e) => {
   const formatOpt = e.target.value;
-  const transactionsDates = document.querySelectorAll(".transactions-date");
 
-  transactionsDates.forEach((transactionDate) => {
-    const date = new Date(transactionDate.innerHTML);
+  localStorage.setItem("datetype", formatOpt);
 
-    transactionDate.innerHTML = dateFormatHandler(formatOpt, date);
+  const transactions = JSON.parse(localStorage.getItem("transactions"));
+  const updatedTransactions = transactions.map((transaction) => {
+    const newDateFormat = dateFormatHandler(formatOpt, transaction.date);
+
+    return {
+      type: transaction.type,
+      name: transaction.name,
+      amount: transaction.amount,
+      date: newDateFormat,
+      dateType: formatOpt,
+      id: transaction.id,
+    };
   });
+
+  localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+  updateState();
 });
 
 sorting.addEventListener("click", (e) => {
@@ -393,3 +409,44 @@ sorting.addEventListener("click", (e) => {
   localStorage.setItem("transactions", JSON.stringify(updatedTransactionList));
   updateState();
 });
+
+showTransactions.addEventListener("click", (e) => {
+  const showOpt = e.target.value;
+
+  if (showOpt === "all" || showOpt === "default") {
+    const transactions = JSON.parse(localStorage.getItem("transactions"));
+    updateTransactionList(transactions);
+  }
+
+  if (showOpt === "expenses") {
+    const transactions = JSON.parse(localStorage.getItem("transactions"));
+
+    const filteredTransactions = transactions.filter(
+      ({ type }) => type === "expense"
+    );
+    updateTransactionList(filteredTransactions);
+  }
+
+  if (showOpt === "loans") {
+    const transactions = JSON.parse(localStorage.getItem("transactions"));
+
+    const filteredTransactions = transactions.filter(
+      ({ type }) => type === "loan"
+    );
+
+    updateTransactionList(filteredTransactions);
+  }
+});
+
+const dollarUpdateFunction = () => {
+  const dollarSolidary = document.getElementById("solidary");
+  const dollarBlue = document.getElementById("blue");
+
+  fetch("https://criptoya.com/api/dolar")
+    .then((response) => response.json())
+    .then(({ solidario, blue }) => {
+      dollarSolidary.innerHTML += ` ${solidario} ARS`;
+      dollarBlue.innerHTML += ` ${blue} ARS`;
+    });
+};
+dollarUpdateFunction();

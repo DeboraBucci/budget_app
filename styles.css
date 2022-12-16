@@ -69,6 +69,7 @@ input {
 }
 
 .main {
+  position: relative;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -314,7 +315,8 @@ input {
   display: none;
 }
 
-.delete-btn {
+.delete-btn,
+.edit-btn {
   cursor: pointer;
 }
 
@@ -340,11 +342,12 @@ thead tr {
 .transactions-cta {
   margin-top: 1rem;
   display: flex;
+  justify-content: space-between;
   gap: 2rem;
 }
 
 .transactions-cta select {
-  width: 20rem;
+  width: 20%;
 }
 
 #curr-budget {
@@ -366,4 +369,22 @@ thead tr {
 .transactions th:nth-child(3),
 .transactions td:nth-child(3) {
   width: 40%;
+}
+
+.dollar-price {
+  width: 30rem;
+  border: 1px solid rgb(218, 218, 218);
+  color: rgb(107, 107, 107);
+  padding: 2rem;
+  font-size: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border-radius: 3px;
+}
+
+.dollar-price span {
+  font-size: 2rem;
+  font-weight: 100;
+  margin-bottom: -2rem;
 }
